@@ -9,6 +9,7 @@
   "re-password": "Nhập lại mật khẩu",
   "rememberMe": "Lưu thông tin đăng nhập",
   "emailRequire": "Vui lòng nhập địa chỉ email",
+  "planRequire": "Vui lòng nhập kế hoạch",
   "nameRequire": "Vui lòng nhập tên",
   "regionRequire": "Vui lòng chọn quốc gia",
   "stateRequire": "Vui lòng chọn thành phố/tỉnh",
@@ -23,5 +24,7 @@
   "null": " ",
   "addTask": "Thêm task",
   "plan": "Kế hoạch",
-  "estimate":"Thời gian dự định"
+  "estimate":"Thời gian dự định",
+  "confirmDelete":"Bạn có muốn xóa không?",
+  "delete": "Xóa"
 }

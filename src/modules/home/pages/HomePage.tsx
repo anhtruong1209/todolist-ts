@@ -1,64 +1,48 @@
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useEffect, useState } from "react"
 import { ROUTES } from "../../../configs/routes"
 import { ACCESS_TOKEN_KEY } from "../../../utils/constants"
 import Checkbox from "../../common/components/Checkbox"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
+import { IconButton } from "@mui/material"
 import Button from "../../common/components/Button"
 import _ from "lodash"
 import ModalComponent from "../../common/components/Modal"
 import ModalAddContent from "./Modal/ModalAddContent"
+import { RootStateOrAny, useSelector } from "react-redux"
+import ModalDeleteContent from "./Modal/ModalDeleteContent"
 
 interface Props {
   loading: boolean
 }
 
 const HomePage = (props: Props) => {
-  const [open, setOpen] = useState(false)
+  const [openAddModal, setAddOpenModal] = useState(false)
+  const [openDeleteModal, setDeleteOpenModal] = useState(false)
   const { loading } = props
-  const [checked, setChecked] = useState(false)
-  const [listCheck, setListCheck] = useState(Array<[]>)
+  const todolist = useSelector((state: RootStateOrAny) => state.todolist?.todoList)
+  const [listCheck, setListCheck] = useState(todolist)
+  const [choosenId, setChoosenId] = useState<string>()
 
-  const list: any = [
-    {
-      id: "asd",
-      asd: "alo",
-      asd1: "ngu",
-      value: checked,
-    },
-    {
-      id: "3",
-      asd: "s",
-      asd1: "ngu",
-      value: checked,
-    },
-    {
-      id: "2",
-      asd: "alo",
-      asd1: "ngu",
-      value: checked,
-    },
-  ]
+  const handleOpenAddModal = () => {
+    setAddOpenModal(true)
+  }
 
-  const handleOpenModal = () => {
-    setOpen(true)
+  const handleChoosenId = (e: any) => {
+    setDeleteOpenModal(true)
+    setChoosenId(e.target.value)
+    console.log(choosenId)
   }
 
   const onChangeChecked = (id: string, e: ChangeEvent<HTMLInputElement>) => {
-    setListCheck((listChecked) =>
-      listChecked?.map((el: any) => ({ ...el, checked: el?.id === id ? e.target.checked : el?.value })),
+    setListCheck((prev: any) =>
+      prev?.map((el: any) => ({ ...el, value: el?.id === id ? e.target.checked : el?.value })),
     )
   }
 
-  // const onChangeChecked = () => {
-  //   if (_.isEqual(checked, false)) {
-  //     setChecked(true)
-  //   } else {
-  //     setChecked(false)
-  //   }
-  // }
-
-  console.log(list.value)
+  useEffect(() => {
+    setListCheck(todolist)
+  }, [todolist])
 
   const handleLogOut = () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
@@ -86,7 +70,7 @@ const HomePage = (props: Props) => {
                 type="button"
                 isLoading={loading}
                 tagName="addTask"
-                onClick={handleOpenModal}
+                onClick={handleOpenAddModal}
               />
               <div style={{ width: "10%" }}>
                 <select
@@ -106,76 +90,62 @@ const HomePage = (props: Props) => {
               className="bg-warning  d-flex justify-content-center align-items-center p-3"
               style={{ marginTop: "20px", flexDirection: "column", rowGap: "30px" }}
             >
-              {list?.map((item: any) => (
-                <div
-                  className="bg-white text-dark d-flex align-items-center p-2 justify-content-between"
-                  key={item.id}
-                  style={{ width: "80%", borderRadius: "10px" }}
-                >
-                  <div className="d-flex align-items-center column-gap-2" style={{ flex: "1", columnGap: "20px" }}>
-                    <Checkbox
-                      type="checkbox"
-                      value={item.value}
-                      id={item.id}
-                      forHtml={item.id}
-                      name="checkbox"
-                      checked={checked}
-                      onChange={(e) => onChangeChecked(item.id, e)}
-                      tagName="null"
-                    />
-                    <div className="d-flex justify-content-center">
+              {!loading &&
+                listCheck?.map((item: any) => (
+                  <div
+                    className="bg-white text-dark d-flex align-items-center p-2 justify-content-between"
+                    key={item?.id}
+                    style={{ width: "80%", borderRadius: "10px" }}
+                  >
+                    <div className="d-flex align-items-center column-gap-2" style={{ flex: "1", columnGap: "20px" }}>
+                      <Checkbox
+                        type="checkbox"
+                        value={item?.value}
+                        id={item?.id}
+                        forHtml={item?.id}
+                        name="checkbox"
+                        checked={item?.value}
+                        onChange={(e) => onChangeChecked(item?.id, e)}
+                        tagName="null"
+                      />
+                      <div className="d-flex justify-content-center">
+                        <div>
+                          {_.isEqual(item?.value, true) ? (
+                            <>
+                              <div className="fw-bold" style={{ textDecoration: "line-through" }}>
+                                <p>{item?.plan}</p>
+                              </div>
+                              <div style={{ textDecoration: "line-through" }}>
+                                <p>{item?.date}</p>
+                              </div>
+                            </>
+                          ) : (
+                            <>
+                              <div className="fw-bold">
+                                <p>{item?.plan}</p>
+                              </div>
+                              <div>
+                                <p>{item?.date}</p>
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="d-flex" style={{ flex: "1", justifyContent: "end", columnGap: "20px" }}>
                       <div>
-                        {_.isEqual(checked, true) ? (
-                          <>
-                            <div className="fw-bold" style={{ textDecoration: "line-through" }}>
-                              <p>{item.asd}</p>
-                            </div>
-                            <div style={{ textDecoration: "line-through" }}>
-                              <p>{item.asd1}</p>
-                            </div>
-                          </>
-                        ) : (
-                          <>
-                            <div className="fw-bold">
-                              <p>{item.asd}</p>
-                            </div>
-                            <div>
-                              <p>{item.asd1}</p>
-                            </div>
-                          </>
-                        )}
-
-                        {/* {_.isEqual(checked, true) ? (
-                          <div className="fw-bold" style={{ textDecoration: "line-through" }}>
-                            <p>asdasdsadsadsa</p>
-                          </div>
-                        ) : (
-                          <div className="fw-bold">
-                            <p>asdasdsadsadsa</p>
-                          </div>
-                        )}
-                        {_.isEqual(checked, true) ? (
-                          <div style={{ textDecoration: "line-through" }}>
-                            <p>asd</p>
-                          </div>
-                        ) : (
-                          <div>
-                            <p>asd</p>
-                          </div>
-                        )} */}
+                        <IconButton>
+                          <EditIcon />
+                        </IconButton>
+                      </div>
+                      <div>
+                        <IconButton id={item?.id} onClick={handleChoosenId}>
+                          <DeleteIcon />
+                        </IconButton>
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex" style={{ flex: "1", justifyContent: "end", columnGap: "20px" }}>
-                    <div>
-                      <EditIcon />
-                    </div>
-                    <div>
-                      <DeleteIcon />
-                    </div>
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
@@ -185,7 +155,16 @@ const HomePage = (props: Props) => {
           </a>
         </div>
       </div>
-      <ModalComponent open={open} setOpen={setOpen} content={<ModalAddContent />} />
+      <ModalComponent
+        open={openAddModal}
+        setOpen={setAddOpenModal}
+        content={<ModalAddContent setOpen={setAddOpenModal} />}
+      />
+      <ModalComponent
+        open={openDeleteModal}
+        setOpen={setDeleteOpenModal}
+        content={<ModalDeleteContent setOpen={setDeleteOpenModal} id={choosenId} />}
+      />
     </div>
   )
 }
