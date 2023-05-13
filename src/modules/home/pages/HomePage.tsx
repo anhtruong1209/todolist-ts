@@ -12,11 +12,27 @@ import ModalAddContent from "./Modal/ModalAddContent"
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux"
 import ModalDeleteContent from "./Modal/ModalDeleteContent"
 import ModalUpdateContent from "./Modal/ModalUpdateContent"
-import { filterList } from "../../intl/redux/toDoListSlice"
+import { checkedTodoList, setTodoList } from "../../intl/redux/toDoListSlice"
+import { transformDataTodoList } from "../../auth/utils"
 
 interface Props {
   loading: boolean
 }
+
+const listFilter = [
+  {
+    value: "ALL",
+    title: "All",
+  },
+  {
+    value: "INCOMPLETE",
+    title: "Incomplete",
+  },
+  {
+    value: "COMPLETE",
+    title: "Complete",
+  },
+]
 
 const HomePage = (props: Props) => {
   const dispatch = useDispatch()
@@ -25,55 +41,23 @@ const HomePage = (props: Props) => {
   const [openUpdateModal, setUpdateOpenModal] = useState(false)
   const { loading } = props
   const todolist = useSelector((state: RootStateOrAny) => state.todolist?.todoList)
-  const [listCheck, setListCheck] = useState(todolist)
-  const filterStatus = useSelector((state: RootStateOrAny) => state.todolist?.filterStatus)
-  const [filter, setFilter] = useState(filterStatus)
+  const [filter, setFilter] = useState(listFilter[0]?.value)
   const [choosenId, setChoosenId] = useState<string>()
-
-  const listFilter = [
-    {
-      value: 0,
-      title: "All",
-    },
-    {
-      value: 1,
-      title: "Incomplete",
-    },
-    {
-      value: 2,
-      title: "Complete",
-    },
-  ]
-
+  useEffect(() => {
+    const dataTodoList = JSON.parse(localStorage.getItem("todolist") as string) || [];
+    dispatch(setTodoList(dataTodoList))
+  },[])
   const handleOpenAddModal = () => {
     setAddOpenModal(true)
   }
 
   const onChangeChecked = (id: string, e: ChangeEvent<HTMLInputElement>) => {
-    setListCheck((prev: any) =>
-      prev?.map((el: any) => {
-        return { ...el, status: el?.id === id ? e.target.checked : el?.status }
-      }),
-    )
-    localStorage.setItem("todolist", JSON.stringify(listCheck))
+    dispatch(checkedTodoList({id, newStatus : e.target.checked}))
   }
 
   const onChangeFilter = (e: any) => {
     setFilter(e.target.value)
-    dispatch(filterList(e.target.value))
   }
-
-  const filterTodo = [...todolist]
-  filterTodo.filter((item: any) => {
-    if (filterStatus === 0) {
-      return true
-    }
-    return item.state === filterStatus
-  })
-  console.log(filterTodo)
-  useEffect(() => {
-    setListCheck(JSON.parse(localStorage.getItem("todolist") as string))
-  }, [todolist])
 
   const handleLogOut = () => {
     localStorage.removeItem(ACCESS_TOKEN_KEY)
@@ -104,7 +88,7 @@ const HomePage = (props: Props) => {
                 onClick={handleOpenAddModal}
               />
               <div style={{ width: "10%" }}>
-                <select className="form-select" value={filter} onChange={(e: any) => onChangeFilter(e)}>
+                <select className="form-select" onChange={(e: any) => onChangeFilter(e)}>
                   {listFilter.map((item: any) => (
                     <option key={item.value} value={item.value}>
                       {item.title}
@@ -117,8 +101,8 @@ const HomePage = (props: Props) => {
               className="bg-warning  d-flex justify-content-center align-items-center p-3"
               style={{ marginTop: "20px", flexDirection: "column", rowGap: "30px" }}
             >
-              {!loading && filterTodo && filterTodo.length > 0 ? (
-                filterTodo?.map((item: any) => (
+              {!loading && todolist?.length > 0 ? (
+                transformDataTodoList(todolist, filter)?.map((item: any) => (
                   <div
                     className="bg-white text-dark d-flex align-items-center p-2 justify-content-between"
                     key={item?.id}
@@ -134,8 +118,6 @@ const HomePage = (props: Props) => {
                         checked={item?.status}
                         onChange={(e) => {
                           onChangeChecked(item?.id, e)
-                          // setChecked(item?.status)
-                          console.log(item?.status)
                         }}
                         tagName="null"
                       />

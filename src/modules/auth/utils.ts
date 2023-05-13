@@ -35,3 +35,13 @@ export const validateLogin = (values: ILoginParams): ILoginValidation => {
 export const validLogin = (values: ILoginValidation) => {
   return !values.email && !values.password;
 };
+
+export const transformDataTodoList = (todoList: Array<any>, filter: string) => {
+  if (filter === 'ALL') {
+    return todoList;
+  } else if (filter === 'INCOMPLETE') {
+    return todoList?.filter((item: any) => !item.status);
+  } else if (filter === 'COMPLETE') {
+    return todoList?.filter((item: any) => item.status);
+  }
+};
