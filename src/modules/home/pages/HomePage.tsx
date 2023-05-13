@@ -44,15 +44,15 @@ const HomePage = (props: Props) => {
   const [filter, setFilter] = useState(listFilter[0]?.value)
   const [choosenId, setChoosenId] = useState<string>()
   useEffect(() => {
-    const dataTodoList = JSON.parse(localStorage.getItem("todolist") as string) || [];
+    const dataTodoList = JSON.parse(localStorage.getItem("todolist") as string) || []
     dispatch(setTodoList(dataTodoList))
-  },[])
+  }, [])
   const handleOpenAddModal = () => {
     setAddOpenModal(true)
   }
 
   const onChangeChecked = (id: string, e: ChangeEvent<HTMLInputElement>) => {
-    dispatch(checkedTodoList({id, newStatus : e.target.checked}))
+    dispatch(checkedTodoList({ id, newStatus: e.target.checked }))
   }
 
   const onChangeFilter = (e: any) => {

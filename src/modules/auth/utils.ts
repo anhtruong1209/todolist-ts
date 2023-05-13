@@ -1,47 +1,47 @@
-import { ILoginParams, ILoginValidation } from '../../models/auth';
-import { validEmailRegex } from '../../utils';
+import { ILoginParams, ILoginValidation } from "../../models/auth"
+import { validEmailRegex } from "../../utils"
 
 const validateEmail = (email: string) => {
   if (!email) {
-    return 'emailRequire';
+    return "emailRequire"
   }
 
   if (!validEmailRegex.test(email)) {
-    return 'emailInvalid';
+    return "emailInvalid"
   }
 
-  return '';
-};
+  return ""
+}
 
 const validatePassword = (password: string) => {
   if (!password) {
-    return 'passwordRequire';
+    return "passwordRequire"
   }
 
   if (password.length < 4) {
-    return 'minPasswordInvalid';
+    return "minPasswordInvalid"
   }
 
-  return '';
-};
+  return ""
+}
 
 export const validateLogin = (values: ILoginParams): ILoginValidation => {
   return {
     email: validateEmail(values.email),
     password: validatePassword(values.password),
-  };
-};
+  }
+}
 
 export const validLogin = (values: ILoginValidation) => {
-  return !values.email && !values.password;
-};
+  return !values.email && !values.password
+}
 
 export const transformDataTodoList = (todoList: Array<any>, filter: string) => {
-  if (filter === 'ALL') {
-    return todoList;
-  } else if (filter === 'INCOMPLETE') {
-    return todoList?.filter((item: any) => !item.status);
-  } else if (filter === 'COMPLETE') {
-    return todoList?.filter((item: any) => item.status);
+  if (filter === "ALL") {
+    return todoList
+  } else if (filter === "INCOMPLETE") {
+    return todoList?.filter((item: any) => !item.status)
+  } else if (filter === "COMPLETE") {
+    return todoList?.filter((item: any) => item.status)
   }
-};
+}
