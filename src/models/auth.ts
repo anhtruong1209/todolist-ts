@@ -27,4 +27,5 @@ export interface IRegisterParams {
 
 export type TType = {
   todoList: string[]
+  filterStatus: number
 }

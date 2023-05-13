@@ -3,13 +3,9 @@ import { FormattedMessage } from "react-intl"
 import Button from "../../../common/components/Button"
 import { deleteTodo } from "../../../intl/redux/toDoListSlice"
 import { useDispatch } from "react-redux"
+import { IModal } from "../../../../models/user"
 
-interface Props {
-  setOpen(value: boolean): void
-  id: string | undefined
-}
-
-const ModalDeleteContent = (props: Props) => {
+const ModalDeleteContent = (props: IModal) => {
   const { setOpen, id } = props
   const dispatch = useDispatch()
 
@@ -18,8 +14,8 @@ const ModalDeleteContent = (props: Props) => {
   }
 
   const handleDelete = () => {
+    setOpen(false)
     dispatch(deleteTodo(id))
-    console.log(id)
   }
 
   return (

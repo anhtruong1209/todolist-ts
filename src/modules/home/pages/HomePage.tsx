@@ -9,39 +9,70 @@ import Button from "../../common/components/Button"
 import _ from "lodash"
 import ModalComponent from "../../common/components/Modal"
 import ModalAddContent from "./Modal/ModalAddContent"
-import { RootStateOrAny, useSelector } from "react-redux"
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux"
 import ModalDeleteContent from "./Modal/ModalDeleteContent"
+import ModalUpdateContent from "./Modal/ModalUpdateContent"
+import { filterList } from "../../intl/redux/toDoListSlice"
 
 interface Props {
   loading: boolean
 }
 
 const HomePage = (props: Props) => {
+  const dispatch = useDispatch()
   const [openAddModal, setAddOpenModal] = useState(false)
   const [openDeleteModal, setDeleteOpenModal] = useState(false)
+  const [openUpdateModal, setUpdateOpenModal] = useState(false)
   const { loading } = props
   const todolist = useSelector((state: RootStateOrAny) => state.todolist?.todoList)
   const [listCheck, setListCheck] = useState(todolist)
+  const filterStatus = useSelector((state: RootStateOrAny) => state.todolist?.filterStatus)
+  const [filter, setFilter] = useState(filterStatus)
   const [choosenId, setChoosenId] = useState<string>()
+
+  const listFilter = [
+    {
+      value: 0,
+      title: "All",
+    },
+    {
+      value: 1,
+      title: "Incomplete",
+    },
+    {
+      value: 2,
+      title: "Complete",
+    },
+  ]
 
   const handleOpenAddModal = () => {
     setAddOpenModal(true)
   }
 
-  const handleChoosenId = (e: any) => {
-    setDeleteOpenModal(true)
-    setChoosenId(e.target.value)
-    console.log(choosenId)
-  }
-
   const onChangeChecked = (id: string, e: ChangeEvent<HTMLInputElement>) => {
     setListCheck((prev: any) =>
-      prev?.map((el: any) => ({ ...el, value: el?.id === id ? e.target.checked : el?.value })),
+      prev?.map((el: any) => {
+        return { ...el, status: el?.id === id ? e.target.checked : el?.status }
+      }),
     )
+    localStorage.setItem("todolist", JSON.stringify(listCheck))
   }
 
+  const onChangeFilter = (e: any) => {
+    setFilter(e.target.value)
+    dispatch(filterList(e.target.value))
+  }
+
+  const filterTodo = [...todolist]
+  filterTodo.filter((item: any) => {
+    if (filterStatus === 0) {
+      return true
+    }
+    return item.state === filterStatus
+  })
+  console.log(filterTodo)
   useEffect(() => {
-    setListCheck(todolist)
+    setListCheck(JSON.parse(localStorage.getItem("todolist") as string))
   }, [todolist])
 
   const handleLogOut = () => {
@@ -73,16 +104,12 @@ const HomePage = (props: Props) => {
                 onClick={handleOpenAddModal}
               />
               <div style={{ width: "10%" }}>
-                <select
-                  className="form-select"
-                  // name={name}
-                  // value={value}
-                  // aria-label="Floating label select example"
-                  // onChange={onChange}
-                >
-                  <option value="asasass">asd</option>
-                  <option value="asasass">asd</option>
-                  <option value="asasass">asd</option>
+                <select className="form-select" value={filter} onChange={(e: any) => onChangeFilter(e)}>
+                  {listFilter.map((item: any) => (
+                    <option key={item.value} value={item.value}>
+                      {item.title}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
@@ -90,8 +117,8 @@ const HomePage = (props: Props) => {
               className="bg-warning  d-flex justify-content-center align-items-center p-3"
               style={{ marginTop: "20px", flexDirection: "column", rowGap: "30px" }}
             >
-              {!loading &&
-                listCheck?.map((item: any) => (
+              {!loading && filterTodo && filterTodo.length > 0 ? (
+                filterTodo?.map((item: any) => (
                   <div
                     className="bg-white text-dark d-flex align-items-center p-2 justify-content-between"
                     key={item?.id}
@@ -100,17 +127,21 @@ const HomePage = (props: Props) => {
                     <div className="d-flex align-items-center column-gap-2" style={{ flex: "1", columnGap: "20px" }}>
                       <Checkbox
                         type="checkbox"
-                        value={item?.value}
+                        value={item?.status}
                         id={item?.id}
                         forHtml={item?.id}
                         name="checkbox"
-                        checked={item?.value}
-                        onChange={(e) => onChangeChecked(item?.id, e)}
+                        checked={item?.status}
+                        onChange={(e) => {
+                          onChangeChecked(item?.id, e)
+                          // setChecked(item?.status)
+                          console.log(item?.status)
+                        }}
                         tagName="null"
                       />
                       <div className="d-flex justify-content-center">
                         <div>
-                          {_.isEqual(item?.value, true) ? (
+                          {_.isEqual(item?.status, true) ? (
                             <>
                               <div className="fw-bold" style={{ textDecoration: "line-through" }}>
                                 <p>{item?.plan}</p>
@@ -134,18 +165,32 @@ const HomePage = (props: Props) => {
                     </div>
                     <div className="d-flex" style={{ flex: "1", justifyContent: "end", columnGap: "20px" }}>
                       <div>
-                        <IconButton>
+                        <IconButton
+                          onClick={() => {
+                            setUpdateOpenModal(true)
+                            setChoosenId(item.id)
+                            console.log(item.id)
+                          }}
+                        >
                           <EditIcon />
                         </IconButton>
                       </div>
                       <div>
-                        <IconButton id={item?.id} onClick={handleChoosenId}>
+                        <IconButton
+                          onClick={() => {
+                            setDeleteOpenModal(true)
+                            setChoosenId(item.id)
+                          }}
+                        >
                           <DeleteIcon />
                         </IconButton>
                       </div>
                     </div>
                   </div>
-                ))}
+                ))
+              ) : (
+                <>asd</>
+              )}
             </div>
           </div>
         </div>
@@ -158,12 +203,17 @@ const HomePage = (props: Props) => {
       <ModalComponent
         open={openAddModal}
         setOpen={setAddOpenModal}
-        content={<ModalAddContent setOpen={setAddOpenModal} />}
+        content={<ModalAddContent setOpen={setAddOpenModal} id={undefined} />}
       />
       <ModalComponent
         open={openDeleteModal}
         setOpen={setDeleteOpenModal}
         content={<ModalDeleteContent setOpen={setDeleteOpenModal} id={choosenId} />}
+      />
+      <ModalComponent
+        open={openUpdateModal}
+        setOpen={setUpdateOpenModal}
+        content={<ModalUpdateContent setOpen={setUpdateOpenModal} id={choosenId} />}
       />
     </div>
   )

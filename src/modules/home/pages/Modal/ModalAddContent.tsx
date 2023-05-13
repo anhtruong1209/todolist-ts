@@ -8,12 +8,9 @@ import { addTodo } from "../../../intl/redux/toDoListSlice"
 import { useDispatch } from "react-redux"
 import moment from "moment"
 import { v4 as uuidv4 } from "uuid"
+import { IModal } from "../../../../models/user"
 
-interface Props {
-  setOpen(value: boolean): void
-}
-
-const ModalAddContent = (props: Props) => {
+const ModalAddContent = (props: IModal) => {
   const { setOpen } = props
   const dispatch = useDispatch()
   const formik = useFormik({
