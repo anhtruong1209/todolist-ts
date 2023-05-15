@@ -1,14 +1,14 @@
 import React from "react"
-import Input from "../../../common/components/Input"
-import Button from "../../../common/components/Button"
+import Input from "../../../../common/components/Input"
+import Button from "../../../../common/components/Button"
 import { FormattedMessage } from "react-intl"
 import { useFormik } from "formik"
-import { addTodoListSchema } from "../../../auth/schema/Schema"
-import { addTodo } from "../../../intl/redux/toDoListSlice"
+import { addTodoListSchema } from "../../../../auth/schema/Schema"
+import { addTodo } from "../../../../intl/redux/toDoListSlice"
 import { useDispatch } from "react-redux"
 import moment from "moment"
 import { v4 as uuidv4 } from "uuid"
-import { IModal } from "../../../../models/user"
+import { IModal } from "../../../../../models/user"
 
 const ModalAddContent = (props: IModal) => {
   const { setOpen } = props
@@ -34,7 +34,14 @@ const ModalAddContent = (props: IModal) => {
         className="row g-3 needs-validation"
         onSubmit={formik.handleSubmit}
       >
-        <Input tagName="plan" type="text" name="plan" value={formik.values.plan} onChange={formik.handleChange} />
+        <Input
+          tagName="plan"
+          type="text"
+          name="plan"
+          value={formik.values.plan}
+          onChange={formik.handleChange}
+          className="form-control"
+        />
         {formik.errors.plan && formik.touched.plan && (
           <small className="text-danger">
             <FormattedMessage id={formik.errors.plan} />

@@ -1,19 +1,19 @@
 import React, { ChangeEvent, useEffect, useState } from "react"
-import { ROUTES } from "../../../configs/routes"
-import { ACCESS_TOKEN_KEY } from "../../../utils/constants"
-import Checkbox from "../../common/components/Checkbox"
+import { ROUTES } from "../../../../configs/routes"
+import { ACCESS_TOKEN_KEY } from "../../../../utils/constants"
+import Checkbox from "../../../common/components/Checkbox"
 import EditIcon from "@mui/icons-material/Edit"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { IconButton } from "@mui/material"
-import Button from "../../common/components/Button"
+import Button from "../../../common/components/Button"
 import _ from "lodash"
-import ModalComponent from "../../common/components/Modal"
+import ModalComponent from "../../../common/components/Modal"
 import ModalAddContent from "./Modal/ModalAddContent"
 import { RootStateOrAny, useDispatch, useSelector } from "react-redux"
 import ModalDeleteContent from "./Modal/ModalDeleteContent"
 import ModalUpdateContent from "./Modal/ModalUpdateContent"
-import { checkedTodoList, setTodoList } from "../../intl/redux/toDoListSlice"
-import { transformDataTodoList } from "../../auth/utils"
+import { checkedTodoList, setTodoList } from "../../../intl/redux/toDoListSlice"
+import { transformDataTodoList } from "../../../auth/utils"
 
 interface Props {
   loading: boolean
@@ -177,9 +177,14 @@ const HomePage = (props: Props) => {
           </div>
         </div>
         <div>
-          <a href={ROUTES.login} onClick={handleLogOut}>
-            Log out
-          </a>
+          <div>
+            <a href={ROUTES.login} onClick={handleLogOut}>
+              Log out
+            </a>
+          </div>
+          <div>
+            <a href={ROUTES.payroll}>Next to Payroll</a>
+          </div>
         </div>
       </div>
       <ModalComponent

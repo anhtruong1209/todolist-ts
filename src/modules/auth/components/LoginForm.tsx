@@ -44,7 +44,14 @@ const LoginForm = (props: Props) => {
       )}
 
       <div className="col-md-12">
-        <Input tagName="email" type="text" name="email" value={formik.values.email} onChange={formik.handleChange} />
+        <Input
+          className="form-control"
+          tagName="email"
+          type="text"
+          name="email"
+          value={formik.values.email}
+          onChange={formik.handleChange}
+        />
         {formik.errors.email && formik.touched.email && (
           <small className="text-danger">
             <FormattedMessage id={formik.errors.email} />
@@ -54,6 +61,7 @@ const LoginForm = (props: Props) => {
 
       <div className="col-md-12">
         <Input
+          className="form-control"
           tagName="password"
           type="password"
           name="password"

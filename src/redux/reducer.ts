@@ -4,6 +4,7 @@ import { combineReducers } from "redux"
 import authReducer, { AuthState } from "../modules/auth/redux/authReducer"
 import intlReducer, { IntlState } from "../modules/intl/redux/intlReducer"
 import toDoListSlice from "../modules/intl/redux/toDoListSlice"
+import payrollSlice from "../modules/intl/redux/payrollSlice"
 
 export interface AppState {
   router: RouterState
@@ -17,5 +18,6 @@ export default function createRootReducer(history: History) {
     intl: intlReducer,
     profile: authReducer,
     todolist: toDoListSlice,
+    payroll: payrollSlice,
   })
 }

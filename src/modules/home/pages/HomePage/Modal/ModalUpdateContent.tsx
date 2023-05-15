@@ -1,11 +1,11 @@
 import React from "react"
-import Button from "../../../common/components/Button"
-import Input from "../../../common/components/Input"
-import { IModal } from "../../../../models/user"
+import Button from "../../../../common/components/Button"
+import Input from "../../../../common/components/Input"
+import { IModal } from "../../../../../models/user"
 import { useFormik } from "formik"
-import { addTodoListSchema } from "../../../auth/schema/Schema"
+import { addTodoListSchema } from "../../../../auth/schema/Schema"
 import moment from "moment"
-import { updateTodo } from "../../../intl/redux/toDoListSlice"
+import { updateTodo } from "../../../../intl/redux/toDoListSlice"
 import { useDispatch } from "react-redux"
 import { FormattedMessage } from "react-intl"
 
@@ -32,7 +32,14 @@ const ModalUpdateContent = (props: IModal) => {
           className="row g-3 needs-validation"
           onSubmit={formik.handleSubmit}
         >
-          <Input tagName="plan" type="text" name="plan" value={formik.values.plan} onChange={formik.handleChange} />
+          <Input
+            tagName="plan"
+            type="text"
+            name="plan"
+            value={formik.values.plan}
+            onChange={formik.handleChange}
+            className="form-control"
+          />
           {formik.errors.plan && formik.touched.plan && (
             <small className="text-danger">
               <FormattedMessage id={formik.errors.plan} />

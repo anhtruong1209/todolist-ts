@@ -79,7 +79,14 @@ const RegisterForm = (props: Props) => {
         onSubmit={formik.handleSubmit}
       >
         <div className="col-md-12">
-          <Input tagName="email" type="text" name="email" value={formik.values.email} onChange={formik.handleChange} />
+          <Input
+            className="form-control"
+            tagName="email"
+            type="text"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+          />
           {formik.errors.email && formik.touched.email && (
             <small className="text-danger">
               <FormattedMessage id={formik.errors.email} />
@@ -88,6 +95,7 @@ const RegisterForm = (props: Props) => {
         </div>
         <div className="col-md-12">
           <Input
+            className="form-control"
             tagName="password"
             type="password"
             name="password"
@@ -102,6 +110,7 @@ const RegisterForm = (props: Props) => {
         </div>
         <div className="col-md-12">
           <Input
+            className="form-control"
             tagName="re-password"
             type="password"
             name="repeatPassword"
@@ -115,7 +124,14 @@ const RegisterForm = (props: Props) => {
           )}
         </div>
         <div className="col-md-12">
-          <Input tagName="name" type="text" name="name" value={formik.values.name} onChange={formik.handleChange} />
+          <Input
+            className="form-control"
+            tagName="name"
+            type="text"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+          />
           {formik.errors.name && formik.touched.name && (
             <small className="text-danger">
               <FormattedMessage id={formik.errors.name} />

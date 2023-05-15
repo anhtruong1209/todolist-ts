@@ -25,7 +25,16 @@ export interface IRegisterParams {
   token: string
 }
 
+export interface IPayroll {
+  id: string
+  status: string
+}
+
 export type TType = {
   todoList: string[]
   filterStatus: number
+}
+
+export type TTTypePayroll = {
+  payrollList: string[]
 }

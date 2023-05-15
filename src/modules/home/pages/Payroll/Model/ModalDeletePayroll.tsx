@@ -1,21 +1,20 @@
 import React from "react"
-import { FormattedMessage } from "react-intl"
-import Button from "../../../common/components/Button"
-import { deleteTodo } from "../../../intl/redux/toDoListSlice"
+import { IModal } from "../../../../../models/user"
 import { useDispatch } from "react-redux"
-import { IModal } from "../../../../models/user"
+import { deletePayroll } from "../../../../intl/redux/payrollSlice"
+import { FormattedMessage } from "react-intl"
+import Button from "../../../../common/components/Button"
 
-const ModalDeleteContent = (props: IModal) => {
+const ModalDeletePayroll = (props: IModal) => {
   const { setOpen, id } = props
   const dispatch = useDispatch()
-
   const handleCloseModal = () => {
     setOpen(false)
   }
 
   const handleDelete = () => {
+    dispatch(deletePayroll(id))
     setOpen(false)
-    dispatch(deleteTodo(id))
   }
 
   return (
@@ -31,4 +30,4 @@ const ModalDeleteContent = (props: IModal) => {
   )
 }
 
-export default ModalDeleteContent
+export default ModalDeletePayroll
