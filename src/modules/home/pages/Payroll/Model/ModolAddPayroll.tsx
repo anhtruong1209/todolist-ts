@@ -16,6 +16,7 @@ const ModolAddPayroll = (props: IModal) => {
   const [status, setStatus] = useState<any | undefined>()
   const [client, setClient] = useState<any | undefined>()
   const [date, setDate] = useState<any | undefined>()
+
   const formik = useFormik({
     initialValues: {
       invoice: uuidv4(),
@@ -24,7 +25,7 @@ const ModolAddPayroll = (props: IModal) => {
     },
     // validationSchema: registerSchema,
     onSubmit: (values: any) => {
-      values.date = moment(date.$d).format("DD MMM YYYY")
+      values.date = moment(date).format("DD MMM YYYY")
       values.status = status
       values.client = client
       dispatch(addPayroll(values))
@@ -64,7 +65,10 @@ const ModolAddPayroll = (props: IModal) => {
             id="start"
             name="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => {
+              setDate(e.target.value)
+              console.log(e.target.value)
+            }}
           />
         </div>
         <div className="col-md-12">

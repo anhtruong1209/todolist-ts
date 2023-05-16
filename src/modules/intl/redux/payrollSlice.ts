@@ -9,7 +9,7 @@ const payrollSlice = createSlice({
   name: "payroll",
   initialState: initState,
   reducers: {
-    setTodoList: (state, action) => {
+    setPayrollList: (state, action) => {
       state.payrollList = action.payload || []
     },
     addPayroll: (state, action) => {
@@ -23,5 +23,5 @@ const payrollSlice = createSlice({
     },
   },
 })
-export const { addPayroll, deletePayroll } = payrollSlice.actions
+export const { addPayroll, deletePayroll, setPayrollList } = payrollSlice.actions
 export default payrollSlice.reducer

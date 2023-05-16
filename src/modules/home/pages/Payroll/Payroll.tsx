@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from "react"
+import React, { CSSProperties, ChangeEvent, useEffect, useState } from "react"
 import Button from "../../../common/components/Button"
 import Input from "../../../common/components/Input"
 import Dropdown from "./Dropdown"
@@ -7,9 +7,10 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ModalComponent from "../../../common/components/Modal"
 import ModolAddPayroll from "./Model/ModolAddPayroll"
 import { listClient, listStatus } from "../HomePage/Data/data"
-import { RootStateOrAny, useSelector } from "react-redux"
+import { RootStateOrAny, useDispatch, useSelector } from "react-redux"
 import ModalDeletePayroll from "./Model/ModalDeletePayroll"
 import ModalDetailPayroll from "./Model/ModalDetailPayroll"
+import { setPayrollList } from "../../../intl/redux/payrollSlice"
 
 interface Props {
   loading: boolean
@@ -17,11 +18,15 @@ interface Props {
 
 const Payroll = (props: Props) => {
   const { loading } = props
+  const dispatch = useDispatch()
   const [openAddPayroll, setOpenAddPayroll] = useState(false)
   const [openDeletePayroll, setOpenDeletePayroll] = useState(false)
   const [openDetailPayroll, setOpenDetailPayroll] = useState(false)
   const listPayroll = useSelector((state: RootStateOrAny) => state.payroll?.payrollList)
   const [choosenId, setChoosenId] = useState<string>()
+  const [searchInputStatus, setSearchInputStatus] = useState<any | undefined>()
+  const [searchInputClient, setSearchInputClient] = useState<any | undefined>()
+
   const ads = () => {}
 
   const styleTable: CSSProperties | undefined = {
@@ -29,6 +34,23 @@ const Payroll = (props: Props) => {
     textAlign: "left",
     padding: "8px",
   }
+
+  const handleClear = () => {
+    setSearchInputStatus("")
+    dispatch(setPayrollList(JSON.parse(localStorage.getItem("payroll") as string) || []))
+  }
+
+  const handleSearch = () => {
+    const dataInLocal = JSON.parse(localStorage.getItem("payroll") as string) || []
+    const listSearch = dataInLocal.filter((item: any) => {
+      return item.status.match(searchInputStatus)
+    })
+    dispatch(setPayrollList(listSearch))
+  }
+
+  useEffect(() => {
+    dispatch(setPayrollList(JSON.parse(localStorage.getItem("payroll") as string) || []))
+  }, [])
 
   return (
     <div style={{ height: "100vh", display: "flex", justifyContent: "center" }}>
@@ -57,8 +79,20 @@ const Payroll = (props: Props) => {
           }}
         >
           <div style={{ display: "flex", columnGap: "20px" }}>
-            <Dropdown name={undefined} value={undefined} onChange={ads} list={listStatus} style={{ width: "150px" }} />
-            <Dropdown name={undefined} value={undefined} onChange={ads} list={listClient} style={{ width: "150px" }} />
+            <Dropdown
+              name={undefined}
+              value={searchInputStatus}
+              onChange={(e) => setSearchInputStatus(e.target.value)}
+              list={listStatus}
+              style={{ width: "150px" }}
+            />
+            <Dropdown
+              name={undefined}
+              value={searchInputClient}
+              onChange={(e) => setSearchInputClient(e.target.value)}
+              list={listClient}
+              style={{ width: "150px" }}
+            />
             <input type="date" id="start" name="trip-start" value="2018-07-22" style={{ width: "100%" }} />
             <input type="date" id="start" name="trip-start" value="2018-07-22" style={{ width: "100%" }} />
             <Input tagName=" " type="text" name="involce" value={undefined} onChange={ads} className="form" />
@@ -67,14 +101,14 @@ const Payroll = (props: Props) => {
               type="button"
               isLoading={loading}
               tagName="apply"
-              onClick={undefined}
+              onClick={handleSearch}
             />
             <Button
               className="btn btn-outline-secondary"
               type="button"
               isLoading={loading}
               tagName="clear"
-              onClick={undefined}
+              onClick={handleClear}
             />
           </div>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
