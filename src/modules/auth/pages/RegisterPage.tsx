@@ -49,7 +49,7 @@ const RegisterPage = () => {
         flexDirection: "column",
       }}
     >
-      <img src={logo} alt="" style={{ maxWidth: "250px", margin: "32px" }} />
+      <img src={logo} alt="" style={{ maxWidth: "250px", marginBottom: "32px", marginTop: "150px" }} />
 
       <RegisterForm onRegister={onRegister} loading={loading} />
     </div>
